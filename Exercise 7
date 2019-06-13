@@ -1,0 +1,132 @@
+import java.util.*;
+import java.io.*;
+
+class RandomThread extends Thread 
+{
+    private Boolean odd; // true for odd thread, false for even thread
+    private int trials = 0;
+    private PrintWriter output_file;
+    
+    public RandomThread(String n, Boolean b) 
+    { 
+        super(n); 
+        odd = b; 
+    }
+    
+    @Override
+    public void run() 
+    {
+        boolean loop = true;
+        
+        try
+        {
+            output_file = new PrintWriter (new File (this.getName() + ".txt"));
+        }
+        catch (Exception e)
+        {
+            System.err.println(e);
+        }
+        
+        Random rand = new Random();
+        
+        //If the odd status is true
+        if (odd)
+        {
+            while (loop)
+            {
+                trials++;
+                int r1 = rand.nextInt(9)+1;
+                int r2 = rand.nextInt(9)+1;
+                int r3 = rand.nextInt(9)+1;
+                int r4 = rand.nextInt(9)+1;
+                int r5 = rand.nextInt(9)+1;
+                int r8 = rand.nextInt(9)+1;
+                int r6 = rand.nextInt(9)+1;
+                int r7 = rand.nextInt(9)+1;
+                
+                
+                output_file.printf("Trial %d >> %d %d %d %d %d %d %d %d\r\n",trials,r1,r2,r3,r4,r5,r6,r7,r8);
+                
+                if (r1!=r2&&r1!=r3&&r1!=r4&&r1!=r5&&r1!=r6&&r1!=r8&&r1!=r7)
+                    if (r2!=r3&&r2!=r4&&r2!=r5&&r2!=r6&&r2!=r7&&r2!=r8)
+                        if (r3!=r4&&r3!=r5&&r3!=r6&&r3!=r7&&r3!=r8)
+                            if (r4!=r5&&r6!=r7&&r4!=r8)
+                                if (r5!=r6&&r5!=r7&&r5!=r8)
+                                    if (r6!=r7&&r6!=r8)
+                                        if (r7!=r8)
+                        
+                        
+                {
+                    loop = false;
+                }
+                
+                //System.out.printf("%s thread has finished with a result of %d %d %d %d %d\r\n",this.getName(),r1,r2,r3,r4,r5);
+            }
+            System.out.printf("%s >> %d trials\r\n",this.getName(),trials);
+            
+        }
+        
+        //If the off status is false
+        else
+        {
+            while (loop)
+            {
+                trials++;
+                int r1 = rand.nextInt(9)+1;
+                int r2 = rand.nextInt(9)+1;
+                int r3 = rand.nextInt(9)+1;
+                int r4 = rand.nextInt(9)+1;
+                
+                
+                output_file.printf("Trial %d >> %d %d %d %d \r\n",trials,r1,r2,r3,r4);
+                
+                if (r1==r2&&r1==r3&&r1==r4)
+                {
+                    loop = false;
+                }
+                
+                //System.out.printf("%s thread has finished with a result of %d %d %d %d %d\r\n",this.getName(),r1,r2,r3,r4,r5);
+            }
+            System.out.printf("%s >> %d trials\r\n",this.getName(),trials);
+            
+        }
+        output_file.close();
+        
+    }
+}
+
+public class FoodDelivery {
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        System.out.print("Number of threads: ");
+        Scanner scan_num = new Scanner (System.in);
+        int num = scan_num.nextInt();
+        
+        ArrayList <Thread> list = new ArrayList<Thread>();
+        
+        for (int i = 0; i < num; i++)
+        {
+            Thread temp;
+            if (i%2 != 0)
+            {
+                boolean odd = true;
+                String T_name = "T" + (i+1)+"_same";
+                temp = new RandomThread (T_name,odd);
+                list.add(temp);
+                list.get(i).start();
+            }
+            else
+            {
+                boolean odd = false;
+                String T_name = "T" + (i+1)+"_odd";
+                temp = new RandomThread (T_name,odd);
+                list.add(temp);
+                list.get(i).start();
+            }
+        }
+    }
+    
+}
